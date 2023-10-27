@@ -7,6 +7,11 @@ Tecenicatura en Desarollo Web
 Facultad de Informatica
 Universidad Nacional del Comahue
 
+# Profesores
+
+# Numero del grupo
+Grupo Nº1
+
 # Integrantes del grupo
 
  **Agustin Perez** -Lejago: FAI-3784 - email: agustin.perez@est.fi.uncoma.edu.ar - GitHub: agustinDanielPerez
