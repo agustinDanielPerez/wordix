@@ -77,7 +77,7 @@ function escribirAmarillo($texto)
 
 /**
  * Escrbir un texto en color GRIS
- * @param string $texto)
+ * @param string $texto
  */
 function escribirGris($texto)
 {
@@ -149,7 +149,8 @@ function esPalabra($cadena)
 }
 
 /**
- *  ****COMPLETAR*****
+ * este modulo lee una palabra del teclado
+ * @return string
  */
 function leerPalabra5Letras()
 {
