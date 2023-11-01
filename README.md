@@ -14,6 +14,8 @@ Grupo Nº1
 
 # Integrantes del grupo
 
- **Agustin Perez** -Lejago: FAI-3784 - email: agustin.perez@est.fi.uncoma.edu.ar - GitHub: agustinDanielPerez
+ **Agustin Perez** -Legajo: FAI-3784 - email: agustin.perez@est.fi.uncoma.edu.ar - GitHub: agustinDanielPerez
  
- **Laura Perez Toledo** -Lejago: FAI-5038 - email: laura.perez@est.fi.uncoma.edu.ar - GitHub: LauPerezToledo
+ **Laura Perez Toledo** -Legajo: FAI-5038 - email: laura.perez@est.fi.uncoma.edu.ar - GitHub: LauPerezToledo
+
+**Celina Itati Goday** -Legajo: FAI-5058 - email: celina.goday@est.fi.uncoma.edu.ar - GitHub: celigoday
