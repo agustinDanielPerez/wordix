@@ -8,6 +8,7 @@ include_once("wordix.php");
 /**************************************/
 
 /* Perez, Agustin. FAI-3784. TUDW. agustin.perez@est.fi.uncoma.edu.ar. agustinDanielPerez */
+/* Perez Toledo, Laura. FAI-5038. TUDW. laura.perez@est.fi.uncoma.edu.ar. lauPerezToledo */
 /* ****COMPLETAR***** */
 
 
@@ -30,8 +31,8 @@ function cargarColeccionPalabras()
 
     return ($coleccionPalabras);
 }
-/**
- * carga nuevas palabras
+/**EXPLICACION 3 PUNTO 7
+ * Carga nuevas palabras
  * @param string $nuevaPalabra
  * @param array $coleccionPalabras
  * @return array
@@ -43,7 +44,7 @@ function cargarNuevaPalabra($coleccionPalabras, $Palabra){
     return($coleccionPalabras);
 }
 /**
- * este modulo tiene cargadas distintas partidas de distintos jugadores
+ * Este módulo tiene cargadas distintas partidas de distintos jugadores
  * @return array
  */
 function cargarPartidas(){
@@ -57,16 +58,16 @@ function cargarPartidas(){
     $partida8=["palabraWordix" => "YUYOS", "jugador" => "karina", "intentos" => 1, "puntaje" => 17];
     $partida9=["palabraWordix" => "RASGO", "jugador" => "ruperto", "intentos" => 5, "puntaje" => 12];
     $partida10=["palabraWordix" => "MUJER", "jugador" => "lauuu", "intentos" => 1, "puntaje" => 15];
-    $partida11=["palabraWordix" => "MUJER", "jugador" => "agustin", "puntaje" => 0];
+    $partida11=["palabraWordix" => "MUJER", "jugador" => "agustin", "intentos" => 6, "puntaje" => 0];
     $partidasGuardadas = [$partida1, $partida2, $partida3, $partida4, $partida5, $partida6, $partida7, $partida8, $partida9, $partida10, $partida11];
     return($partidasGuardadas);
 }
 /**
- * este modulo meustra las opciones del menu
+ * Este módulo muestra las opciones del menú
  * @return int
  */
 function seleccionarOpcion(){
-    /*int $opcionElegida*/
+    //int $opcionElegida
     echo "\n¿Que quiere hacer? \n";
     echo "1) Jugar al wordix con una palabra elegida:\n";
     echo "2) Jugar al wordix con una palabra aleatoria:\n";
@@ -76,45 +77,89 @@ function seleccionarOpcion(){
     echo "6) Mostrar listado de partidas ordenadas por jugador y por palabra:\n";
     echo "7) Agregar una palabra de 5 letras a wordix:\n";
     echo "8) Salir\n";
-    echo "Ingrese opcion: ";
+    echo "Ingrese opción: ";
     $opcionElegida = trim(fgets(STDIN));
-    return($opcionElegida);
+    return((int)$opcionElegida);
 }
-/**
- * este modulo dado un numero muestra una partida
+/**EXPLICACION 1 PUNTO 3
+ * Este módulo dado un numero muestra una partida
  * @param int $numero
  * @param array $partidasGuardadas
  */
 function datosPartida($partidasGuardadas,$numero){
     echo "**********************************************************\n";
-    echo "Partida wordix ".$numero.": palabra ".$partidasGuardadas[$numero-1]["palabraWordix"]."\n";
+    echo "Partida WORDIX ".$numero.": palabra ".$partidasGuardadas[$numero-1]["palabraWordix"]."\n";
     echo "Jugador: ".$partidasGuardadas[$numero-1]["jugador"]."\n";
-    echo "Puntos: ".$partidasGuardadas[$numero-1]["puntaje"]."\n";
+    echo "Puntaje: ".$partidasGuardadas[$numero-1]["puntaje"]."\n";
+    echo "Intento: ";
     if($partidasGuardadas[$numero-1]["puntaje"]==0){
-        echo "No adivino la palabra\n";
+        echo "No adivinó la palabra\n";
     }else{
-        echo"Adivino la palabra en ".$partidasGuardadas[$numero-1]["intentos"]." intentos\n";
+        echo"Adivinó la palabra en ".$partidasGuardadas[$numero-1]["intentos"]." intentos\n";
     }
     echo "**********************************************************";
 }
-/**
- * este modulo retorna el indice de la primer partida ganada por un jugador
+/**EXPLICACION 1 PUNTO 4 Y EXPLICACION 3 PUNTO 8
+ * Este módulo retorna el índice de la primer partida ganada por un determinado jugador
  * @param string $nombreJugador
  * @param array $partidasGuardadas
  * @return int 
  */
-function partidasGanadas($partidasGuardadas, $nombreJugador){
-    
-
+function primerPartidaGanada($partidasGuardadas, $nombreJugador){
+    //int $encontrada, $i
+    $encontrada = false;
+    $i = 0;
+    while ($encontrada != true){
+        if($partidasGuardadas[$i]["jugador"] == $nombreJugador && $partidasGuardadas[$i]["puntaje"] != 0){
+            $encontrada = true;
+        }
+        $i++;
+    }
+    if ($encontrada == false){
+        echo "El jugador ". $partidasGuardadas[$i]["jugador"]. " no ganó ninguna partida";
+        return -1;
+    }
+    else {
+        echo "**********************************************************\n";
+        echo "Partida WORDIX ".$i.": palabra ".$partidasGuardadas[$i-1]["palabraWordix"]."\n";
+        echo "Jugador: ".$partidasGuardadas[$i-1]["jugador"]."\n";
+        echo "Puntos: ".$partidasGuardadas[$i-1]["puntaje"]."\n";
+        echo"Intento: Adivinó la palabra en ".$partidasGuardadas[$i-1]["intentos"]." intentos\n";
+        echo "**********************************************************";
+    }
+    return $i-1;
 }
-/**
- * este modulo solicita al usuario el nombre de un jugador y retorna el nombre
+
+/**EXPLICACION 3 PUNTO 10
+ * Este módulo solicita al usuario el nombre de un jugador y retorna el nombre
  * en minusculas
  *@return string
 */
 function solicitarJugador(){
-
+    //string $nombre, nombreMinuscula
+    echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra): ";                 
+    $nombre = trim(fgets(STDIN));
+    if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z")
+        $nombreMinuscula = strtolower($nombre);
+    else
+        echo "El primer caracter no es una letra";
+    return $nombreMinuscula;
 }
+
+/**EXPLICACION 1 PUNTO 7 Y EXPLICACION 3 PUNTO 4
+ * Este módulo solicita al usuario una palabra de 5 letras para agregarla al juego y retorna la palabra ingresada
+ * @param array $coleccionPalabras
+ * @return string
+ */
+
+ function agregarPalabra($coleccionPalabras){
+    //string $palabra
+    echo "Ingrese una palabra de 5 letras: ";
+    $palabra = trim(fgets(STDIN));
+    $palabra = strtoupper($palabra); //Función que convierte el string a mayúsculas
+    cargarNuevaPalabra($coleccionPalabras, $palabra);
+    return $palabra;
+ }
 
 /**************************************/
 /*********** PROGRAMA PRINCIPAL *******/
