@@ -27,7 +27,10 @@ const ESTADO_LETRA_PERTENECE = "pertenece";
 /**************************************/
 
 /**
- *  ****COMPLETAR*****
+ *  este modulo le solicita al usuario un numero entre un rango de valores
+ * @param int $min
+ * @param int $max
+ * @return int
  */
 function solicitarNumeroEntre($min, $max)
 {
@@ -120,7 +123,8 @@ function escribirSegunEstado($texto, $estado)
 }
 
 /**
- * ****COMPLETAR*****
+ * este modulo dado un nombre de usuario muestra un cartel de bienvenida
+ * @param string $usuario
  */
 function escribirMensajeBienvenida($usuario)
 {
@@ -133,16 +137,18 @@ function escribirMensajeBienvenida($usuario)
 
 
 /**
- * ****COMPLETAR*****
+ * este modulo dado un string retorna true o false, si ese string no contiene letras
+ * @param string $cadena
+ * @return boolean
  */
 function esPalabra($cadena)
 {
     //int $cantCaracteres, $i, boolean $esLetra
-    $cantCaracteres = strlen($cadena);
+    $cantCaracteres = strlen($cadena); // Obtiene la longitud de un string
     $esLetra = true;
     $i = 0;
     while ($esLetra && $i < $cantCaracteres) {
-        $esLetra =  ctype_alpha($cadena[$i]);
+        $esLetra =  ctype_alpha($cadena[$i]); // Verifica que cada caracter sea una letra y no un numero
         $i++;
     }
     return $esLetra;
@@ -168,7 +174,7 @@ function leerPalabra5Letras()
 
 
 /**
- * Inicia una estructura de datos Teclado. La estructura es de tipo: ¿Indexado, asociativo o Multidimensional?
+ * Inicia una estructura de datos Teclado. La estructura es de tipo: asociativo.
  *@return array
  */
 function iniciarTeclado()
@@ -346,7 +352,7 @@ function obtenerPuntajeWordix()  /* ****COMPLETAR***** parámetros formales nece
  */
 function jugarWordix($palabraWordix, $nombreUsuario)
 {
-    /*Inicialización*/
+    /*int $nroIntento, string $palabraIntento, boolean $ganoElIntento, int $puntaje*/
     $arregloDeIntentosWordix = [];
     $teclado = iniciarTeclado();
     escribirMensajeBienvenida($nombreUsuario);
