@@ -115,19 +115,10 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
         }
         $i++;
     }
-    if ($encontrada == false){
-        echo "El jugador ". $partidasGuardadas[$i]["jugador"]. " no ganó ninguna partida";
-        return -1;
+    if($encontrada == false){
+        $i=-1;
     }
-    else {
-        echo "**********************************************************\n";
-        echo "Partida WORDIX ".$i.": palabra ".$partidasGuardadas[$i-1]["palabraWordix"]."\n";
-        echo "Jugador: ".$partidasGuardadas[$i-1]["jugador"]."\n";
-        echo "Puntos: ".$partidasGuardadas[$i-1]["puntaje"]."\n";
-        echo"Intento: Adivinó la palabra en ".$partidasGuardadas[$i-1]["intentos"]." intentos\n";
-        echo "**********************************************************";
-    }
-    return $i-1;
+    return $i;
 }
 
 /**EXPLICACION 3 PUNTO 10
@@ -220,8 +211,22 @@ do {
            
             break;
         case 4:
+            echo "Ingrese el nombre del jugador:";
+            $nombreJugador = trim(fgets(STDIN));
+            $partidas = cargarPartidas();
+            $indicePartidadGanada = primerPartidaGanada($partidas, $nombreJugador);
+            if($indicePartidadGanada == -1){
+                echo "El jugador ".$nombreJugador." no gano ninguna partida";
+            }else{
             
-            
+              echo "**********************************************************\n";
+              echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$partidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
+              echo "Jugador: ".$partidas[$indicePartidadGanada-1]["jugador"]."\n";
+              echo "Puntos: ".$partidas[$indicePartidadGanada-1]["puntaje"]."\n";
+              echo"Intento: Adivinó la palabra en ".$partidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
+              echo "**********************************************************";
+                
+            }
             break;
 
         case 5: 
