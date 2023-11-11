@@ -142,19 +142,6 @@ function solicitarJugador(){
     return $nombreMinuscula;
 }
 
-/**EXPLICACION 1 PUNTO 7 Y EXPLICACION 3 PUNTO 4
- * Este módulo solicita al usuario una palabra de 5 letras para agregarla al juego y retorna la palabra ingresada
- * @param array $coleccionPalabras
- * @return string
-*/
-function agregarPalabra($coleccionPalabras){
-    //string $palabra
-    echo "Ingrese una palabra de 5 letras: ";
-    $palabra = trim(fgets(STDIN));
-    $palabra = strtoupper($palabra); //Función que convierte el string a mayúsculas
-    cargarNuevaPalabra($coleccionPalabras, $palabra);
-    return $palabra;
-}
 /**
  * Este modulo dado un nombre y un array, verifica sinombre esta dentro del array
  * @param array $partidas
@@ -174,6 +161,30 @@ function verExistenciaNombre($partidas, $nombre){
     }while((!$esNombre) && ($i < count($partidas)));
     return $esNombre;
 }
+
+/**
+ * Este modulo dado una coleccion de palabra, una coleccion de partidas y una palabra
+ * verifica si el jugador ya jugo con esa palabra
+ * @param array $arregloPartidas
+ * @param array $arregloPalabras
+ * @param int $numeroPalabra
+ * @param string $usuario
+ * @return boolean
+*/
+function verificarNumeroPalabra($arregloPalabras, $arregloPartidas, $numeroPalabra, $usuario){
+    /*boolean $verPalabra, int $i*/
+    $i=0;
+    $verPalabra = false;
+    do{
+        if(($arregloPalabras[$numeroPalabra-1]==$arregloPartidas[$i]["palabraWordix"])&&($arregloPartidas[$i]["jugador"]==$usuario)){
+            $verPalabra = true;
+        }else{
+            $i++;
+        }
+    }while(!$verPalabra && $i < count($arregloPalabras) && $i < count($arregloPartidas));
+    return $verPalabra;
+}
+
 /**
  * Este modulo muestra una coleccion de partidas ordenadas por el nombre del jugador
  * y por la palabra
@@ -190,7 +201,7 @@ function partidasOrdenadas(){
 
 
 //Inicialización de variables:
-
+$partidaJugada = [];
 
 //Proceso:
 
@@ -206,10 +217,30 @@ do {
 
     switch ($opcion) { //estructura de control alternativa switch, sirve para desarollar una rama de opciones dependiendo de un valor que haya ingresado el usuario
         case 1: 
-            echo "Ingrese su nombre de usuario:\n";
+            echo "Ingresar nombre de usuario:";
             $nombreUsuario = trim(fgets(STDIN));
-            echo "Ingrese un numero para la palabra:";
-            $numPalabra = trim(fgets(STDIN));
+            escribirMensajeBienvenida($nombreUsuario);
+            $seguirPreguntando = false;
+            do{
+                echo "Ingrese un numero de palabra para jugar:";
+                $numPalabra = trim(fgets(STDIN));
+                $coleccionPalabras = cargarColeccionPalabras();
+                $coleccionPartidas = cargarPartidas();
+                if($numPalabra<count($coleccionPalabras)){
+                    $usoPalabra = verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $numPalabra, $nombreUsuario);
+                    if(!$usoPalabra){
+                        $palabraAJugar = $coleccionPalabras[$numPalabra];
+                        $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
+                        $cantPartidas = count($coleccionPartidas);
+                        $coleccionPartidas[$cantPartidas] = $partidaJugada;
+                        $seguirPreguntando = true;
+                    }else{
+                        echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
+                    }
+                }else{
+                    echo "No existe la palabra, vuelve a intentarlo.\n";
+                }
+            }while(!$seguirPreguntando);
             break;
         case 2: 
             echo "Ingrese su nombre de usuario:\n";
@@ -261,10 +292,9 @@ do {
 
             break;
         case 7: 
-            $nuevaPalabra = leerPalabra5Letras();
+            $palabra = leerPalabra5Letras();
             $coleccionPalabras = cargarColeccionPalabras();
-            $coleccionPalabras = cargarNuevaPalabra($coleccionPalabras, $nuevaPalabra); 
-            echo "Ya agregaste una nueva palabra, vuelve al menu para jugar.";
+            cargarNuevaPalabra($coleccionPalabras,$palabra);
             break;
         default: 
         if($opcion != 8){
