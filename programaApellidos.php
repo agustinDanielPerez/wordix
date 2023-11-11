@@ -58,7 +58,7 @@ function cargarPartidas(){
     $partida8=["palabraWordix" => "YUYOS", "jugador" => "karina", "intentos" => 1, "puntaje" => 17];
     $partida9=["palabraWordix" => "RASGO", "jugador" => "ruperto", "intentos" => 5, "puntaje" => 12];
     $partida10=["palabraWordix" => "MUJER", "jugador" => "lauuu", "intentos" => 1, "puntaje" => 15];
-    $partida11=["palabraWordix" => "MUJER", "jugador" => "agustin", "intentos" => 6, "puntaje" => 0];
+    $partida11=["palabraWordix" => "MUJER", "jugador" => "laura", "intentos" => 6, "puntaje" => 0];
     $partidasGuardadas = [$partida1, $partida2, $partida3, $partida4, $partida5, $partida6, $partida7, $partida8, $partida9, $partida10, $partida11];
     return($partidasGuardadas);
 }
@@ -106,7 +106,7 @@ function datosPartida($partidasGuardadas,$numero){
  * @return int 
  */
 function primerPartidaGanada($partidasGuardadas, $nombreJugador){
-    //int $encontrada, $i
+    //int $i, boolean $encontrada
     $encontrada = false;
     $i = 0;
     while ($encontrada != true){
@@ -156,6 +156,25 @@ function agregarPalabra($coleccionPalabras){
     return $palabra;
 }
 /**
+ * Este modulo dado un nombre y un array, verifica sinombre esta dentro del array
+ * @param array $partidas
+ * @param string $nombre
+ * @return boolean
+*/
+function verExistenciaNombre($partidas, $nombre){
+    /* boolean $esNombre , int $i*/
+    $i=0;
+    $esNombre = false;
+    do{ 
+        if($partidas[$i]["jugador"]==$nombre){
+            $esNombre = true;
+        }else{
+            $i++;
+        }
+    }while((!$esNombre) && ($i < count($partidas)));
+    return $esNombre;
+}
+/**
  * Este modulo muestra una coleccion de partidas ordenadas por el nombre del jugador
  * y por la palabra
  * @param array $partidasGuardadas
@@ -201,32 +220,38 @@ do {
             do{
                 echo "Ingrese el numero de la partida:";
                 $numeroPartida = trim(fgets(STDIN));
-                $partidasGuardadas = cargarPartidas();
-                if(($numeroPartida<=count($partidasGuardadas)&&($numeroPartida>=1))){
-                    datosPartida($partidasGuardadas,$numeroPartida);
+                $partidas = cargarPartidas();
+                if(($numeroPartida<=count($partidas)&&($numeroPartida>=1))){
+                    datosPartida($partidas,$numeroPartida);
                 }else{
                     echo"No existe el numero de partida, vuelve a intentarlo.\n";
                 }
-            }while(($numeroPartida>count($partidasGuardadas)||($numeroPartida<1)));
+            }while(($numeroPartida>count($partidas)||($numeroPartida<1)));
            
             break;
         case 4:
-            echo "Ingrese el nombre del jugador:";
-            $nombreJugador = trim(fgets(STDIN));
-            $partidas = cargarPartidas();
-            $indicePartidadGanada = primerPartidaGanada($partidas, $nombreJugador);
-            if($indicePartidadGanada == -1){
-                echo "El jugador ".$nombreJugador." no gano ninguna partida";
-            }else{
+            do{
+                echo "Ingrese el nombre del jugador:";
+                $nombreJugador = trim(fgets(STDIN));
+                $partidas = cargarPartidas();
+                $existeNombre = verExistenciaNombre($partidas,$nombreJugador);
+                if($existeNombre){
+                   $indicePartidadGanada = primerPartidaGanada($partidas, $nombreJugador); 
+                    if($indicePartidadGanada == -1){
+                        echo "El jugador ".$nombreJugador." no gano ninguna partida";
+                    }else{
+                    echo "**********************************************************\n";
+                    echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$partidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
+                    echo "Jugador: ".$partidas[$indicePartidadGanada-1]["jugador"]."\n";
+                    echo "Puntos: ".$partidas[$indicePartidadGanada-1]["puntaje"]."\n";
+                    echo"Intento: Adivinó la palabra en ".$partidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
+                    echo "**********************************************************";
+                    }    
+                }else{
+                    echo "Nombre inexistente, vuelva a intentarlo.\n";
+                }    
             
-              echo "**********************************************************\n";
-              echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$partidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
-              echo "Jugador: ".$partidas[$indicePartidadGanada-1]["jugador"]."\n";
-              echo "Puntos: ".$partidas[$indicePartidadGanada-1]["puntaje"]."\n";
-              echo"Intento: Adivinó la palabra en ".$partidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
-              echo "**********************************************************";
-                
-            }
+            }while(!$existeNombre);
             break;
 
         case 5: 
