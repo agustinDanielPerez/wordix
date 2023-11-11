@@ -136,13 +136,18 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
  *@return string
 */
 function solicitarJugador(){
-    //string $nombre, nombreMinuscula
-    echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra): ";                 
-    $nombre = trim(fgets(STDIN));
-    if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z")
-        $nombreMinuscula = strtolower($nombre);
-    else
-        echo "El primer caracter no es una letra";
+    //string $nombre, nombreMinuscula, boolean $verificacionPalabra
+    do{
+        $verificacionPalabra = true;
+        echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra): ";                 
+        $nombre = trim(fgets(STDIN));
+        if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z"){
+            $nombreMinuscula = strtolower($nombre);
+        }else{
+            echo "El primer caracter no es una letra";
+            $verificacionPalabra = false;
+        }
+    }while(!$verificacionPalabra);
     return $nombreMinuscula;
 }
 
@@ -150,16 +155,22 @@ function solicitarJugador(){
  * Este módulo solicita al usuario una palabra de 5 letras para agregarla al juego y retorna la palabra ingresada
  * @param array $coleccionPalabras
  * @return string
- */
-
- function agregarPalabra($coleccionPalabras){
+*/
+function agregarPalabra($coleccionPalabras){
     //string $palabra
     echo "Ingrese una palabra de 5 letras: ";
     $palabra = trim(fgets(STDIN));
     $palabra = strtoupper($palabra); //Función que convierte el string a mayúsculas
     cargarNuevaPalabra($coleccionPalabras, $palabra);
     return $palabra;
- }
+}
+/**
+ * Este modulo muestra una coleccion de partidas ordenadas por el nombre del jugador
+ * y por la palabra
+ * @param array $partidasGuardadas
+*/
+function partidasOrdenadas(){
+}    
 
 /**************************************/
 /*********** PROGRAMA PRINCIPAL *******/
@@ -209,7 +220,8 @@ do {
            
             break;
         case 4:
-
+            
+            
             break;
 
         case 5: 
