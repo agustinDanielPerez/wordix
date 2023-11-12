@@ -127,7 +127,7 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
  *@return string
 */
 function solicitarJugador(){
-    //string $nombre, nombreMinuscula, boolean $verificacionPalabra
+    //string $nombre, nombreMinuscula, boolean $verificacionPalabra   
     do{
         $verificacionPalabra = true;
         echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra): ";                 
@@ -219,7 +219,6 @@ do {
         case 1: 
             echo "Ingresar nombre de usuario:";
             $nombreUsuario = trim(fgets(STDIN));
-            escribirMensajeBienvenida($nombreUsuario);
             $seguirPreguntando = false;
             do{
                 echo "Ingrese un numero de palabra para jugar:";
