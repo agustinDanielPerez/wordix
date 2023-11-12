@@ -335,13 +335,45 @@ function esIntentoGanado($estructuraPalabraIntento)
 }
 
 /**
- * ****COMPLETAR***** documentación de la intefaz
+ * Este modulo calcula la cantidad de puntos de un jugador, dado
+ * cantidad de intentos y la palabra
+ * @param int $cantIntentos
+ * @param string $palabra
+ * @return int
  */
-function obtenerPuntajeWordix()  /* ****COMPLETAR***** parámetros formales necesarios */
-{
-
-    /* ****COMPLETAR***** cuerpo de la función*/
-    return 0;
+function obtenerPuntajeWordix($cantIntentos, $palabra){ 
+    /*int $puntos, int $longitudPalabra, int $i*/
+    $longitudPalabra = strlen($palabra);
+    if($cantIntentos == 0){
+        $puntos = 0;
+    }else{
+        if($cantIntentos == 1){
+            $puntos = 6;
+        }elseif($cantIntentos == 2){
+            $puntos = 5;
+        }elseif($cantIntentos == 3){
+            $puntos = 4;
+        }elseif($cantIntentos == 4){
+            $puntos = 3;
+        }elseif($cantIntentos == 5){
+            $puntos = 2;
+        }else{
+            $puntos = 1;
+        }
+        for($i=0;$i<$longitudPalabra;$i++){
+            if($palabra[$i]== "A"||$palabra[$i]== "E"||$palabra[$i]=="I"||$palabra[$i]=="O"||$palabra[$i]=="U"){
+                $puntos = $puntos + 1;
+            }else{
+                if($palabra[$i] <= "M"){
+                    $puntos = $puntos + 2;
+                }else{
+                    $puntos = $puntos + 3;
+                } 
+            }
+            
+        }
+    }
+    return $puntos;
 }
 
 /**
@@ -376,7 +408,7 @@ function jugarWordix($palabraWordix, $nombreUsuario)
 
     if ($ganoElIntento) {
         $nroIntento--;
-        $puntaje = obtenerPuntajeWordix();
+        $puntaje = obtenerPuntajeWordix($nroIntento, $palabraWordix);
         echo "Adivinó la palabra Wordix en el intento " . $nroIntento . "!: " . $palabraIntento . " Obtuvo $puntaje puntos!";
     } else {
         $nroIntento = 0; //reset intento
