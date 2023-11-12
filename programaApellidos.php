@@ -37,10 +37,8 @@ function cargarColeccionPalabras()
  * @param array $coleccionPalabras
  * @return array
  */
-function cargarNuevaPalabra($coleccionPalabras, $Palabra){
-    /*int $indice*/
-    $indice = count($coleccionPalabras);
-    $coleccionPalabras[$indice]= $Palabra;
+function cargarNuevaPalabra($coleccionPalabras, $palabra){
+    array_push($coleccionPalabras, $palabra);
     return($coleccionPalabras);
 }
 /**
@@ -143,7 +141,7 @@ function solicitarJugador(){
 }
 
 /**
- * Este modulo dado un nombre y un array, verifica sinombre esta dentro del array
+ * Este modulo dado un nombre y un array, verifica si el nombre esta dentro del array
  * @param array $partidas
  * @param string $nombre
  * @return boolean
@@ -186,12 +184,100 @@ function verificarNumeroPalabra($arregloPalabras, $arregloPartidas, $numeroPalab
 }
 
 /**
- * Este modulo muestra una coleccion de partidas ordenadas por el nombre del jugador
- * y por la palabra
- * @param array $partidasGuardadas
+ * Este modulo calcula el total de puntos de un usuario de todas las 
+ * partidas que jugo
+ * @param array $arregloPartidas
+ * @param string $usuario
+ * @return int
 */
-function partidasOrdenadas(){
-}    
+function puntajeTotal($arregloPartidas, $usuario){
+    /*int $i, int $puntajeTotal*/
+    $puntajeTotal = 0;
+    for($i=0;$i<count($arregloPartidas);$i++){
+        if($arregloPartidas[$i]["jugador"]==$usuario){
+            $puntajeTotal = $puntajeTotal + $arregloPartidas[$i]["puntaje"];
+        }
+    }
+    return $puntajeTotal;
+}
+
+/**
+ * Este modulo calcula el total de partidas que jugo un usuario
+ * @param array $arlegoPartidas
+ * @param string $usuario
+ * @return int
+*/
+function calcularPartidas($arregloPartidas, $usuario){
+    /*int $i, int $totalPartidas*/
+    $totalPartidas = 0;
+    for($i=0;$i<count($arregloPartidas);$i++){
+        if($arregloPartidas[$i]["jugador"]==$usuario){
+            $totalPartidas = $totalPartidas + 1;
+        }
+    }
+    return $totalPartidas;
+}
+
+/**
+ * Este modulo calcula el total de victorias que tuvo el usuario
+ * @param array $arregloPartidas
+ * @param string $usuario
+ * @return int
+*/
+function cantVictorias($arregloPartidas, $usuario){
+    /*int $i, int $cantVictorias*/
+    $cantVictorias = 0;
+    for($i=0;$i<count($arregloPartidas);$i++){
+        if(($arregloPartidas[$i]["jugador"]==$usuario)&&($arregloPartidas[$i]["puntaje"]>0)){
+            $cantVictorias = $cantVictorias + 1;
+        }
+    }
+    return $cantVictorias;
+}
+
+/**
+ * Este modulo calcula la cantidad de intenteos
+ * @param array $arregloPartidas
+ * @param int $numIntento
+ * @param string $usuario
+ * @return int
+*/
+function calcularIntentos($arregloPartidas, $numIntento, $usuario){
+    /*int $i, int $cantIntentos*/
+    $cantIntentos = 0;
+    for($i=0;$i<count($arregloPartidas);$i++){
+        if(($arregloPartidas[$i]["jugador"]==$usuario)&&(($arregloPartidas[$i]["intentos"]==$numIntento))){
+            $cantIntentos = $cantIntentos + 1;
+        }
+    }
+    return $cantIntentos;
+}
+
+/**
+ * Este modulo muestra todas las estadisticas de un jugador
+ * @param array $arregloPartidas
+ * @param string $usuario
+*/
+function estadisticasJugador($arregloPartidas, $usuario){
+    /**/
+    $victorias = cantVictorias($arregloPartidas, $usuario);
+    $partidas = calcularPartidas($arregloPartidas, $usuario);
+    $puntajeFinal = puntajeTotal($arregloPartidas, $usuario);  
+    echo "***********************************************\n";
+    echo "Jugador: ".$usuario;
+    echo "\nPartidas: ".$partidas;
+    echo "\nPuntaje Total: ".$puntajeFinal;
+    echo "\nVictorias: ".$victorias;
+    echo "\nPorcentaje Victorias: ".(($victorias*100)/$partidas)."%\n";
+    echo "Adivinadas: \n";
+    echo "      Intento 1: ".(calcularIntentos($arregloPartidas, 1, $usuario));
+    echo "\n      Intento 2: ".(calcularIntentos($arregloPartidas, 2, $usuario));
+    echo "\n      Intento 3: ".(calcularIntentos($arregloPartidas, 3, $usuario));
+    echo "\n      Intento 4: ".(calcularIntentos($arregloPartidas, 4, $usuario));
+    echo "\n      Intento 5: ".(calcularIntentos($arregloPartidas, 5, $usuario));
+    echo "\n      Intento 6: ".(calcularIntentos($arregloPartidas, 6, $usuario));
+    echo "\n***********************************************";
+}
 
 /**************************************/
 /*********** PROGRAMA PRINCIPAL *******/
@@ -202,19 +288,11 @@ function partidasOrdenadas(){
 
 //Inicialización de variables:
 $partidaJugada = [];
-
+$coleccionPalabras = cargarColeccionPalabras();
+$coleccionPartidas = cargarPartidas();
 //Proceso:
-
-//$partida = jugarWordix("MELON", strtolower("MaJo"));
-//print_r($partida);
-//imprimirResultado($partida);
-
-
-
-
 do {
    $opcion = seleccionarOpcion();
-
     switch ($opcion) { //estructura de control alternativa switch, sirve para desarollar una rama de opciones dependiendo de un valor que haya ingresado el usuario
         case 1: 
             echo "Ingresar nombre de usuario:";
@@ -223,16 +301,17 @@ do {
             do{
                 echo "Ingrese un numero de palabra para jugar:";
                 $numPalabra = trim(fgets(STDIN));
-                $coleccionPalabras = cargarColeccionPalabras();
-                $coleccionPartidas = cargarPartidas();
                 if($numPalabra<count($coleccionPalabras)){
                     $usoPalabra = verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $numPalabra, $nombreUsuario);
                     if(!$usoPalabra){
-                        $palabraAJugar = $coleccionPalabras[$numPalabra];
+                        $palabraAJugar = $coleccionPalabras[$numPalabra-1];
                         $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
-                        $cantPartidas = count($coleccionPartidas);
-                        $coleccionPartidas[$cantPartidas] = $partidaJugada;
-                        $seguirPreguntando = true;
+                        array_push($coleccionPartidas,$partidaJugada);
+                        echo "\nDesea seguir jugando? S/N: ";
+                        $respuesta = trim(fgets(STDIN));
+                        if($respuesta=="N" || $respuesta=="n"){
+                            $seguirPreguntando = true;
+                        }
                     }else{
                         echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
                     }
@@ -242,39 +321,35 @@ do {
             }while(!$seguirPreguntando);
             break;
         case 2: 
-            echo "Ingrese su nombre de usuario:\n";
-            $nombreUsuario = trim(fgets(STDIN));
             
-            break;
+            break;  
         case 3: 
             do{
                 echo "Ingrese el numero de la partida:";
                 $numeroPartida = trim(fgets(STDIN));
-                $partidas = cargarPartidas();
-                if(($numeroPartida<=count($partidas)&&($numeroPartida>=1))){
-                    datosPartida($partidas,$numeroPartida);
+                if(($numeroPartida<=count($coleccionPartidas)&&($numeroPartida>=1))){
+                    datosPartida($coleccionPartidas,$numeroPartida);
                 }else{
                     echo"No existe el numero de partida, vuelve a intentarlo.\n";
                 }
-            }while(($numeroPartida>count($partidas)||($numeroPartida<1)));
+            }while(($numeroPartida>count($coleccionPartidas)||($numeroPartida<1)));
            
             break;
         case 4:
             do{
                 echo "Ingrese el nombre del jugador:";
-                $nombreJugador = trim(fgets(STDIN));
-                $partidas = cargarPartidas();
-                $existeNombre = verExistenciaNombre($partidas,$nombreJugador);
+                $nombreUsuario = trim(fgets(STDIN));
+                $existeNombre = verExistenciaNombre($coleccionPartidas,$nombreUsuario);
                 if($existeNombre){
-                   $indicePartidadGanada = primerPartidaGanada($partidas, $nombreJugador); 
+                   $indicePartidadGanada = primerPartidaGanada($coleccionPartidas, $nombreUsuario); 
                     if($indicePartidadGanada == -1){
                         echo "El jugador ".$nombreJugador." no gano ninguna partida";
                     }else{
                     echo "**********************************************************\n";
-                    echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$partidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
-                    echo "Jugador: ".$partidas[$indicePartidadGanada-1]["jugador"]."\n";
-                    echo "Puntos: ".$partidas[$indicePartidadGanada-1]["puntaje"]."\n";
-                    echo"Intento: Adivinó la palabra en ".$partidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
+                    echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$coleccionPartidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
+                    echo "Jugador: ".$coleccionPartidas[$indicePartidadGanada-1]["jugador"]."\n";
+                    echo "Puntos: ".$coleccionPartidas[$indicePartidadGanada-1]["puntaje"]."\n";
+                    echo"Intento: Adivinó la palabra en ".$coleccionPartidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
                     echo "**********************************************************";
                     }    
                 }else{
@@ -285,7 +360,9 @@ do {
             break;
 
         case 5: 
-
+            echo "Ingrese el nombre del jugador para observar su estadisticas:";
+            $nombreUsuario = trim(fgets(STDIN));
+            estadisticasJugador($coleccionPartidas, $nombreUsuario);
             break;
         case 6: 
 
