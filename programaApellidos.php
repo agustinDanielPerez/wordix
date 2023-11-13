@@ -77,7 +77,7 @@ function seleccionarOpcion(){
     echo "8) Salir\n";
     echo "Ingrese opción: ";
     $opcionElegida = trim(fgets(STDIN));
-    return((int)$opcionElegida);
+    return($opcionElegida);
 }
 /**EXPLICACION 1 PUNTO 3
  * Este módulo dado un numero muestra una partida
@@ -133,7 +133,7 @@ function solicitarJugador(){
         if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z"){
             $nombreMinuscula = strtolower($nombre);
         }else{
-            echo "El primer caracter no es una letra";
+            echo "El primer caracter no es una letra\n";
             $verificacionPalabra = false;
         }
     }while(!$verificacionPalabra);
@@ -295,17 +295,17 @@ $coleccionPartidas = cargarPartidas();
 do {
    $opcion = seleccionarOpcion();
     switch ($opcion) { //estructura de control alternativa switch, sirve para desarollar una rama de opciones dependiendo de un valor que haya ingresado el usuario
-        case 1: 
-            echo "Ingresar nombre de usuario:";
-            $nombreUsuario = trim(fgets(STDIN));
+        case 1:     
+            $nombreUsuario = solicitarJugador();
             $seguirPreguntando = false;
             do{
                 echo "Ingrese un numero de palabra para jugar:";
                 $numPalabra = trim(fgets(STDIN));
-                if($numPalabra<count($coleccionPalabras)){
+                $numPalabra = (int)($numPalabra);
+                if(($numPalabra<count($coleccionPalabras))&&($numPalabra >= 0)){
                     $usoPalabra = verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $numPalabra, $nombreUsuario);
                     if(!$usoPalabra){
-                        $palabraAJugar = $coleccionPalabras[$numPalabra];
+                        $palabraAJugar = $coleccionPalabras[$numPalabra-1];
                         $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
                         array_push($coleccionPartidas,$partidaJugada);
                         echo "\nDesea seguir jugando? S/N: ";
@@ -322,8 +322,7 @@ do {
             }while(!$seguirPreguntando);
             break;
         case 2: 
-            echo "Ingrese nombre de usuario:\n";
-            $nombreUsuario = trim(fgets(STDIN));
+            $nombreUsuario = solicitarJugador();
             $seguirBuscando = true;
             $indice = 0;
             do{ 
@@ -341,6 +340,7 @@ do {
             do{
                 echo "Ingrese el numero de la partida:";
                 $numeroPartida = trim(fgets(STDIN));
+                $numeroPartida = (int)($numeroPartida);
                 if(($numeroPartida<=count($coleccionPartidas)&&($numeroPartida>=1))){
                     datosPartida($coleccionPartidas,$numeroPartida);
                 }else{
@@ -351,8 +351,7 @@ do {
             break;
         case 4:
             do{
-                echo "Ingrese el nombre del jugador:";
-                $nombreUsuario = trim(fgets(STDIN));
+                $nombreUsuario = solicitarJugador();
                 $existeNombre = verExistenciaNombre($coleccionPartidas,$nombreUsuario);
                 if($existeNombre){
                    $indicePartidadGanada = primerPartidaGanada($coleccionPartidas, $nombreUsuario); 
@@ -376,8 +375,7 @@ do {
         case 5: 
             do{
                 $seguirPreguntando = true;
-                echo "Ingrese el nombre del jugador para observar su estadisticas:";
-                $nombreUsuario = trim(fgets(STDIN));
+                $nombreUsuario = solicitarJugador();
                 $verificacionNombre = verExistenciaNombre($coleccionPartidas, $nombreUsuario);
                 if($verificacionNombre){
                     estadisticasJugador($coleccionPartidas, $nombreUsuario);
