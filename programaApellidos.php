@@ -259,7 +259,7 @@ function calcularIntentos($arregloPartidas, $numIntento, $usuario){
  * @param string $usuario
 */
 function estadisticasJugador($arregloPartidas, $usuario){
-    /**/
+    /*int $victorias, int $partidas, int $puntajeFinal*/
     $victorias = cantVictorias($arregloPartidas, $usuario);
     $partidas = calcularPartidas($arregloPartidas, $usuario);
     $puntajeFinal = puntajeTotal($arregloPartidas, $usuario);  
@@ -278,6 +278,7 @@ function estadisticasJugador($arregloPartidas, $usuario){
     echo "\n      Intento 6: ".(calcularIntentos($arregloPartidas, 6, $usuario));
     echo "\n***********************************************";
 }
+
 
 /**************************************/
 /*********** PROGRAMA PRINCIPAL *******/
@@ -321,7 +322,20 @@ do {
             }while(!$seguirPreguntando);
             break;
         case 2: 
-            
+            echo "Ingrese nombre de usuario:\n";
+            $nombreUsuario = trim(fgets(STDIN));
+            $seguirBuscando = true;
+            $indice = 0;
+            do{ 
+                if(!verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $indice+1, $nombreUsuario)){
+                    $palabraAJugar = $coleccionPalabras[$indice];
+                    $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
+                    array_push($coleccionPartidas,$partidaJugada);
+                    $seguirBuscando = false;
+                }else{
+                    $indice++;
+                }
+            }while($seguirBuscando && $indice < count($coleccionPalabras));
             break;  
         case 3: 
             do{
