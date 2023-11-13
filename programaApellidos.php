@@ -56,7 +56,7 @@ function cargarPartidas(){
     $partida8=["palabraWordix" => "YUYOS", "jugador" => "karina", "intentos" => 1, "puntaje" => 17];
     $partida9=["palabraWordix" => "RASGO", "jugador" => "ruperto", "intentos" => 5, "puntaje" => 12];
     $partida10=["palabraWordix" => "MUJER", "jugador" => "lauuu", "intentos" => 1, "puntaje" => 15];
-    $partida11=["palabraWordix" => "MUJER", "jugador" => "laura", "intentos" => 6, "puntaje" => 0];
+    $partida11=["palabraWordix" => "MUJER", "jugador" => "laura", "intentos" => 0, "puntaje" => 0];
     $partidasGuardadas = [$partida1, $partida2, $partida3, $partida4, $partida5, $partida6, $partida7, $partida8, $partida9, $partida10, $partida11];
     return($partidasGuardadas);
 }
@@ -304,7 +304,7 @@ do {
                 if($numPalabra<count($coleccionPalabras)){
                     $usoPalabra = verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $numPalabra, $nombreUsuario);
                     if(!$usoPalabra){
-                        $palabraAJugar = $coleccionPalabras[$numPalabra-1];
+                        $palabraAJugar = $coleccionPalabras[$numPalabra];
                         $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
                         array_push($coleccionPartidas,$partidaJugada);
                         echo "\nDesea seguir jugando? S/N: ";
@@ -360,9 +360,18 @@ do {
             break;
 
         case 5: 
-            echo "Ingrese el nombre del jugador para observar su estadisticas:";
-            $nombreUsuario = trim(fgets(STDIN));
-            estadisticasJugador($coleccionPartidas, $nombreUsuario);
+            do{
+                $seguirPreguntando = true;
+                echo "Ingrese el nombre del jugador para observar su estadisticas:";
+                $nombreUsuario = trim(fgets(STDIN));
+                $verificacionNombre = verExistenciaNombre($coleccionPartidas, $nombreUsuario);
+                if($verificacionNombre){
+                    estadisticasJugador($coleccionPartidas, $nombreUsuario);
+                    $seguirPreguntando = false;
+                }else{
+                    echo "Ingrese un nombre correcto.\n";
+                }
+            }while($seguirPreguntando);
             break;
         case 6: 
 
@@ -370,7 +379,7 @@ do {
         case 7: 
             $palabra = leerPalabra5Letras();
             $coleccionPalabras = cargarColeccionPalabras();
-            cargarNuevaPalabra($coleccionPalabras,$palabra);
+            $coleccionPalabras = cargarNuevaPalabra($coleccionPalabras,$palabra);
             break;
         default: 
         if($opcion != 8){
