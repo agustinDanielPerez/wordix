@@ -31,7 +31,7 @@ function cargarColeccionPalabras()
 
     return ($coleccionPalabras);
 }
-/**EXPLICACION 3 PUNTO 7
+/**
  * Carga nuevas palabras
  * @param string $nuevaPalabra
  * @param array $coleccionPalabras
@@ -79,7 +79,7 @@ function seleccionarOpcion(){
     $opcionElegida = trim(fgets(STDIN));
     return($opcionElegida);
 }
-/**EXPLICACION 1 PUNTO 3
+/**
  * Este módulo dado un numero muestra una partida
  * @param int $numero
  * @param array $partidasGuardadas
@@ -97,7 +97,7 @@ function datosPartida($partidasGuardadas,$numero){
     }
     echo "**********************************************************";
 }
-/**EXPLICACION 1 PUNTO 4 Y EXPLICACION 3 PUNTO 8
+/**
  * Este módulo retorna el índice de la primer partida ganada por un determinado jugador
  * @param string $nombreJugador
  * @param array $partidasGuardadas
@@ -119,7 +119,7 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
     return $i;
 }
 
-/**EXPLICACION 3 PUNTO 10
+/**
  * Este módulo solicita al usuario el nombre de un jugador y retorna el nombre
  * en minusculas
  *@return string
@@ -128,7 +128,7 @@ function solicitarJugador(){
     //string $nombre, nombreMinuscula, boolean $verificacionPalabra   
     do{
         $verificacionPalabra = true;
-        echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra): ";                 
+        echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra: ";                 
         $nombre = trim(fgets(STDIN));
         if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z"){
             $nombreMinuscula = strtolower($nombre);
@@ -285,7 +285,9 @@ function estadisticasJugador($arregloPartidas, $usuario){
 /**************************************/
 
 //Declaración de variables:
-
+/*string $nombreUsuario, array $partidaJugada, array $coleccionPalabras, array $coleccionPartidas
+boolean $seguir, int $numPalabra int $opcion, string $palabraAJugar, boolean $usoPalabra, int $indice
+boolean $existeNombre, int $indicePartidadGanada, boolean $verificacionNombre*/
 
 //Inicialización de variables:
 $partidaJugada = [];
@@ -297,7 +299,7 @@ do {
     switch ($opcion) { //estructura de control alternativa switch, sirve para desarollar una rama de opciones dependiendo de un valor que haya ingresado el usuario
         case 1:     
             $nombreUsuario = solicitarJugador();
-            $seguirPreguntando = false;
+            $seguir = false;
             do{
                 echo "Ingrese un numero de palabra para jugar:";
                 $numPalabra = trim(fgets(STDIN));
@@ -311,7 +313,7 @@ do {
                         echo "\nDesea seguir jugando? S/N: ";
                         $respuesta = trim(fgets(STDIN));
                         if($respuesta=="N" || $respuesta=="n"){
-                            $seguirPreguntando = true;
+                            $seguir = true;
                         }
                     }else{
                         echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
@@ -319,22 +321,22 @@ do {
                 }else{
                     echo "No existe la palabra, vuelve a intentarlo.\n";
                 }
-            }while(!$seguirPreguntando);
+            }while(!$seguir);
             break;
         case 2: 
             $nombreUsuario = solicitarJugador();
-            $seguirBuscando = true;
+            $seguir = true;
             $indice = 0;
             do{ 
                 if(!verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $indice+1, $nombreUsuario)){
                     $palabraAJugar = $coleccionPalabras[$indice];
                     $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
                     array_push($coleccionPartidas,$partidaJugada);
-                    $seguirBuscando = false;
+                    $seguir = false;
                 }else{
                     $indice++;
                 }
-            }while($seguirBuscando && $indice < count($coleccionPalabras));
+            }while($seguir && $indice < count($coleccionPalabras));
             break;  
         case 3: 
             do{
@@ -374,24 +376,24 @@ do {
 
         case 5: 
             do{
-                $seguirPreguntando = true;
+                $seguir = true;
                 $nombreUsuario = solicitarJugador();
                 $verificacionNombre = verExistenciaNombre($coleccionPartidas, $nombreUsuario);
                 if($verificacionNombre){
                     estadisticasJugador($coleccionPartidas, $nombreUsuario);
-                    $seguirPreguntando = false;
+                    $seguir = false;
                 }else{
                     echo "Ingrese un nombre correcto.\n";
                 }
-            }while($seguirPreguntando);
+            }while($seguir);
             break;
         case 6: 
 
             break;
         case 7: 
-            $palabra = leerPalabra5Letras();
+            $palabraAJugar = leerPalabra5Letras();
             $coleccionPalabras = cargarColeccionPalabras();
-            $coleccionPalabras = cargarNuevaPalabra($coleccionPalabras,$palabra);
+            $coleccionPalabras = cargarNuevaPalabra($coleccionPalabras,$palabraAJugar);
             break;
         default: 
         if($opcion != 8){
