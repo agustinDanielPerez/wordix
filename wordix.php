@@ -26,8 +26,8 @@ const ESTADO_LETRA_PERTENECE = "pertenece";
 /***** DEFINICION DE FUNCIONES ********/
 /**************************************/
 
-/**
- *  este modulo le solicita al usuario un numero entre un rango de valores
+/**Explicación 3 Punto 5
+ * Este módulo le solicita al usuario un número entre un rango de valores
  * @param int $min
  * @param int $max
  * @return int
@@ -123,7 +123,7 @@ function escribirSegunEstado($texto, $estado)
 }
 
 /**
- * este modulo dado un nombre de usuario muestra un cartel de bienvenida
+ * Este modulo dado un nombre de usuario muestra un cartel de bienvenida
  * @param string $usuario
  */
 function escribirMensajeBienvenida($usuario)
@@ -137,7 +137,7 @@ function escribirMensajeBienvenida($usuario)
 
 
 /**
- * este modulo dado un string retorna true o false, si ese string no contiene letras
+ * Este modulo dado un string retorna true o false, si ese string no contiene letras
  * @param string $cadena
  * @return boolean
  */
@@ -154,8 +154,9 @@ function esPalabra($cadena)
     return $esLetra;
 }
 
-/**
- * este modulo lee una palabra del teclado
+
+/**Explicación 3 Punto 4
+ * Este módulo le pide al usuario ingresar una palabra de 5 letras, y retorna la palabra
  * @return string
  */
 function leerPalabra5Letras()

@@ -16,7 +16,7 @@ include_once("wordix.php");
 /***** DEFINICION DE FUNCIONES ********/
 /**************************************/
 
-/**
+/**Explicación 3 Punto 1
  * Obtiene una colección de palabras
  * @return array
  */
@@ -31,18 +31,9 @@ function cargarColeccionPalabras()
 
     return ($coleccionPalabras);
 }
-/**
- * Carga nuevas palabras
- * @param string $nuevaPalabra
- * @param array $coleccionPalabras
- * @return array
- */
-function cargarNuevaPalabra($coleccionPalabras, $palabra){
-    array_push($coleccionPalabras, $palabra);
-    return($coleccionPalabras);
-}
-/**
- * Este módulo tiene cargadas distintas partidas de distintos jugadores
+
+/**Explicación 3 Punto 2
+ * Este módulo carga distintas partidas de distintos jugadores
  * @return array
  */
 function cargarPartidas(){
@@ -60,7 +51,7 @@ function cargarPartidas(){
     $partidasGuardadas = [$partida1, $partida2, $partida3, $partida4, $partida5, $partida6, $partida7, $partida8, $partida9, $partida10, $partida11];
     return($partidasGuardadas);
 }
-/**
+/**Explicación 3 Punto 3
  * Este módulo muestra las opciones del menú
  * @return int
  */
@@ -79,7 +70,8 @@ function seleccionarOpcion(){
     $opcionElegida = trim(fgets(STDIN));
     return($opcionElegida);
 }
-/**
+
+/**Explicación 3 Punto 6
  * Este módulo dado un numero muestra una partida
  * @param int $numero
  * @param array $partidasGuardadas
@@ -97,7 +89,19 @@ function datosPartida($partidasGuardadas,$numero){
     }
     echo "**********************************************************";
 }
-/**
+
+/**Explicación 3 Punto 7
+ * Carga nuevas palabras
+ * @param string $nuevaPalabra
+ * @param array $coleccionPalabras
+ * @return array
+ */
+function agregarPalabra($coleccionPalabras, $palabra){
+    array_push($coleccionPalabras, $palabra);
+    return($coleccionPalabras);
+}
+
+/**Explicacion 3 Punto 8
  * Este módulo retorna el índice de la primer partida ganada por un determinado jugador
  * @param string $nombreJugador
  * @param array $partidasGuardadas
@@ -119,9 +123,8 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
     return $i;
 }
 
-/**
- * Este módulo solicita al usuario el nombre de un jugador y retorna el nombre
- * en minusculas
+/**Explicación 3 Punto 10
+ *Este módulo solicita al usuario el nombre de un jugador y retorna el nombre en minusculas
  *@return string
 */
 function solicitarJugador(){
@@ -138,6 +141,14 @@ function solicitarJugador(){
         }
     }while(!$verificacionPalabra);
     return $nombreMinuscula;
+}
+
+/**Explicación 3 Punto 11
+ *Este módulo dada una colección de partidas, muestra las partidas ordenadas por el nombre del jugador y por la palabra.
+ */
+function mostrarPartidasOrdenadas($partidas){
+    uasort($partidas,'auxAusort');   
+    print_r($partidas);
 }
 
 /**
@@ -236,7 +247,7 @@ function cantVictorias($arregloPartidas, $usuario){
 }
 
 /**
- * Este modulo calcula la cantidad de intenteos
+ * Este modulo calcula la cantidad de intentos
  * @param array $arregloPartidas
  * @param int $numIntento
  * @param string $usuario
@@ -277,6 +288,29 @@ function estadisticasJugador($arregloPartidas, $usuario){
     echo "\n      Intento 5: ".(calcularIntentos($arregloPartidas, 5, $usuario));
     echo "\n      Intento 6: ".(calcularIntentos($arregloPartidas, 6, $usuario));
     echo "\n***********************************************";
+}
+
+/**
+ *Este módulo es la función auxiliar que ordena para que la función uasort pueda ser utilizada 
+ *@param array $partida1 
+ *@param array $partida2 
+ *@return int
+*/
+function auxAusort($partida1, $partida2){
+    if ($partida1["jugador"] == $partida2["jugador"]) {
+        if ($partida1["palabraWordix"] == $partida2["palabraWordix"]) {
+           $orden = 0;
+        } elseif ($partida1 ["palabraWordix"] < $partida2["palabraWordix"]) {               
+            $orden = -1; 
+        } else {
+            $orden = 1; 
+        }
+    } elseif ($partida1["jugador"] < $partida2["jugador"]) {
+            $orden = -1; 
+    }  else {
+         $orden = 1; 
+}
+return $orden;
 }
 
 
@@ -388,7 +422,7 @@ do {
             }while($seguir);
             break;
         case 6: 
-
+            mostrarPartidasOrdenadas($coleccionPartidas);
             break;
         case 7: 
             $palabraAJugar = leerPalabra5Letras();
