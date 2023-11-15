@@ -194,101 +194,7 @@ function verificarNumeroPalabra($arregloPalabras, $arregloPartidas, $numeroPalab
     return $verPalabra;
 }
 
-/**
- * Este modulo calcula el total de puntos de un usuario de todas las 
- * partidas que jugo
- * @param array $arregloPartidas
- * @param string $usuario
- * @return int
-*/
-function puntajeTotal($arregloPartidas, $usuario){
-    /*int $i, int $puntajeTotal*/
-    $puntajeTotal = 0;
-    for($i=0;$i<count($arregloPartidas);$i++){
-        if($arregloPartidas[$i]["jugador"]==$usuario){
-            $puntajeTotal = $puntajeTotal + $arregloPartidas[$i]["puntaje"];
-        }
-    }
-    return $puntajeTotal;
-}
 
-/**
- * Este modulo calcula el total de partidas que jugo un usuario
- * @param array $arlegoPartidas
- * @param string $usuario
- * @return int
-*/
-function calcularPartidas($arregloPartidas, $usuario){
-    /*int $i, int $totalPartidas*/
-    $totalPartidas = 0;
-    for($i=0;$i<count($arregloPartidas);$i++){
-        if($arregloPartidas[$i]["jugador"]==$usuario){
-            $totalPartidas = $totalPartidas + 1;
-        }
-    }
-    return $totalPartidas;
-}
-
-/**
- * Este modulo calcula el total de victorias que tuvo el usuario
- * @param array $arregloPartidas
- * @param string $usuario
- * @return int
-*/
-function cantVictorias($arregloPartidas, $usuario){
-    /*int $i, int $cantVictorias*/
-    $cantVictorias = 0;
-    for($i=0;$i<count($arregloPartidas);$i++){
-        if(($arregloPartidas[$i]["jugador"]==$usuario)&&($arregloPartidas[$i]["puntaje"]>0)){
-            $cantVictorias = $cantVictorias + 1;
-        }
-    }
-    return $cantVictorias;
-}
-
-/**
- * Este modulo calcula la cantidad de intentos
- * @param array $arregloPartidas
- * @param int $numIntento
- * @param string $usuario
- * @return int
-*/
-function calcularIntentos($arregloPartidas, $numIntento, $usuario){
-    /*int $i, int $cantIntentos*/
-    $cantIntentos = 0;
-    for($i=0;$i<count($arregloPartidas);$i++){
-        if(($arregloPartidas[$i]["jugador"]==$usuario)&&(($arregloPartidas[$i]["intentos"]==$numIntento))){
-            $cantIntentos = $cantIntentos + 1;
-        }
-    }
-    return $cantIntentos;
-}
-
-/**
- * Este modulo muestra todas las estadisticas de un jugador
- * @param array $arregloPartidas
- * @param string $usuario
-*/
-function estadisticasJugador($arregloPartidas, $usuario){
-    /*int $victorias, int $partidas, int $puntajeFinal*/
-    $victorias = cantVictorias($arregloPartidas, $usuario);
-    $partidas = calcularPartidas($arregloPartidas, $usuario);
-    $puntajeFinal = puntajeTotal($arregloPartidas, $usuario);  
-    echo "***********************************************\n";
-    echo "Jugador: ".$usuario;
-    echo "\nPartidas: ".$partidas;
-    echo "\nPuntaje Total: ".$puntajeFinal;
-    echo "\nVictorias: ".$victorias;
-    echo "\nPorcentaje Victorias: ".(($victorias*100)/$partidas)."%\n";
-    echo "Adivinadas: \n";
-    echo "      Intento 1: ".(calcularIntentos($arregloPartidas, 1, $usuario));
-    echo "\n      Intento 2: ".(calcularIntentos($arregloPartidas, 2, $usuario));
-    echo "\n      Intento 3: ".(calcularIntentos($arregloPartidas, 3, $usuario));
-    echo "\n      Intento 4: ".(calcularIntentos($arregloPartidas, 4, $usuario));
-    echo "\n      Intento 5: ".(calcularIntentos($arregloPartidas, 5, $usuario));
-    echo "\n      Intento 6: ".(calcularIntentos($arregloPartidas, 6, $usuario));
-    echo "\n***********************************************";
-}
 
 /**
  *Este módulo es la función auxiliar que ordena para que la función uasort pueda ser utilizada 
@@ -311,6 +217,68 @@ function auxAusort($partida1, $partida2){
          $orden = 1; 
 }
 return $orden;
+}
+
+/**
+ * Este modulo cargar un resumen de un jugador dado un nombre
+ * y un arreglo de partidas
+ * @param array $arregloPartidas
+ * @param string $usuario
+ * @return array
+*/
+function cargarResumenJugador($arregloPartidas, $usuario){
+    /**/
+    $resumenJugador = [
+        "jugador" => $usuario, "partidas" => 0, "puntaje" => 0, "victorias" => 0, "intento 1" => 0,
+        "intento 2" => 0, "intento 3" => 0, "intento 4" => 0, "intento 5" => 0, "intento 6" => 0
+    ];
+    for($i=0;$i<count($arregloPartidas);$i++){
+        if($arregloPartidas[$i]["jugador"] == $usuario){
+            $resumenJugador["partidas"] = $resumenJugador["partidas"] + 1;
+            if($arregloPartidas[$i]["puntaje"] > 0){
+                $resumenJugador["puntaje"] = $resumenJugador["puntaje"] + $arregloPartidas[$i]["puntaje"];
+                $resumenJugador["victorias"] = $resumenJugador["victorias"] + 1;
+                if($arregloPartidas[$i]["intentos"]==1){
+                    $resumenJugador["intento 1"] = $resumenJugador["intento 1"] + 1;
+                }elseif($arregloPartidas[$i]["intentos"]==2){
+                    $resumenJugador["intento 2"] = $resumenJugador["intento 2"] + 1;
+                }elseif($arregloPartidas[$i]["intentos"]==3){
+                    $resumenJugador["intento 3"] = $resumenJugador["intento 3"] + 1;
+                }elseif($arregloPartidas[$i]["intentos"]==4){
+                    $resumenJugador["intento 4"] = $resumenJugador["intento 4"] + 1;
+                }elseif($arregloPartidas[$i]["intentos"]==5){
+                    $resumenJugador["intento 5"] = $resumenJugador["intento 5"] + 1;
+                }elseif($arregloPartidas[$i]["intentos"]==6){
+                    $resumenJugador["intento 6"] = $resumenJugador["intento 6"] + 1;
+                } 
+            }
+        }
+    }
+    return $resumenJugador;
+}
+
+/**
+ * Este modulo muestra un cartel con las estadisitcas de un jugador
+ * @param array $arregloPartidas
+ * @param string $usuario
+*/
+function estadisticasJugador($arregloPartidas, $usuario){
+    /**/
+    $resumenJugador = cargarResumenJugador($arregloPartidas, $usuario);
+    echo "******************************************************\n";
+    echo "Jugador: ".$resumenJugador["jugador"]."\n";
+    echo "Partidas: ".$resumenJugador["partidas"]."\n";
+    echo "Puntaje Total: ".$resumenJugador["puntaje"]."\n";
+    echo "Victorias: ".$resumenJugador["victorias"]."\n";
+    echo "Porcentaje Victorias: ".(($resumenJugador["victorias"]/$resumenJugador["partidas"])*100)."%\n";
+    echo "Adivinadas: \n";
+    echo "      Intento 1: ".$resumenJugador["intento 1"];
+    echo "\n      Intento 2: ".$resumenJugador["intento 2"];
+    echo "\n      Intento 3: ".$resumenJugador["intento 3"];
+    echo "\n      Intento 4: ".$resumenJugador["intento 4"];
+    echo "\n      Intento 5: ".$resumenJugador["intento 5"];
+    echo "\n      Intento 6: ".$resumenJugador["intento 6"];
+    echo "\n******************************************************\n";
 }
 
 
@@ -427,7 +395,7 @@ do {
         case 7: 
             $palabraAJugar = leerPalabra5Letras();
             $coleccionPalabras = cargarColeccionPalabras();
-            $coleccionPalabras = cargarNuevaPalabra($coleccionPalabras,$palabraAJugar);
+            $coleccionPalabras = array_push($coleccionPalabras,$palabraAJugar);
             break;
         default: 
         if($opcion != 8){
