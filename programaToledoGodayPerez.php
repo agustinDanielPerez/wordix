@@ -148,6 +148,7 @@ function solicitarJugador(){
  *La función uasort ordena un array tal que los índices de array mantienen sus correlaciones con los elementos del array con 
  *los que están asociados, usando una función de comparación definida por el usuario, en este caso, la función auxAusort.
  *La función print_r imprime información legible para humanos sobre una variable.
+ @param array $partidas
  */
 function mostrarPartidasOrdenadas($partidas){
     uasort($partidas,'auxAusort');   
@@ -229,7 +230,7 @@ return $orden;
  * @return array
 */
 function cargarResumenJugador($arregloPartidas, $usuario){
-    /**/
+    /*array $resumenJugador*/
     $resumenJugador = [
         "jugador" => $usuario, "partidas" => 0, "puntaje" => 0, "victorias" => 0, "intento 1" => 0,
         "intento 2" => 0, "intento 3" => 0, "intento 4" => 0, "intento 5" => 0, "intento 6" => 0
@@ -265,7 +266,7 @@ function cargarResumenJugador($arregloPartidas, $usuario){
  * @param string $usuario
 */
 function estadisticasJugador($arregloPartidas, $usuario){
-    /**/
+    /*array $resumenJugador*/
     $resumenJugador = cargarResumenJugador($arregloPartidas, $usuario);
     echo "******************************************************\n";
     echo "Jugador: ".$resumenJugador["jugador"]."\n";
@@ -283,63 +284,7 @@ function estadisticasJugador($arregloPartidas, $usuario){
     echo "\n******************************************************\n";
 }
 
-/**EXPLICACION 1 PUNTO 1
- * Este módulo solicita el nombre del jugador y un número de palabra para jugar. 
- * Si el número de palabra ya fue utilizada por el jugador, se debe indicar que debe elegir otro número de palabra.
- * Luego de finalizar la partida, los datos se guardan en un array de partidas.
- * @param array $coleccionPalabras, $coleccionPartidas
- */
-function jugarPalabraElegida($coleccionPalabras, $coleccionPartidas){
-    /**
-         * string $nombreDeUsuario, $palabraAJugar, $respuesta
-         * boolean $seguirPreguntando, $usoPalabra
-         * int $numPalabra
-         * array $partidaJugada
-    */
-    $nombreUsuario = solicitarJugador();
-            $seguir = false;
-            do{
-                echo "Ingrese un numero de palabra para jugar:";
-                $numPalabra = trim(fgets(STDIN));
-                $numPalabra = (int)($numPalabra);
-                if(($numPalabra<count($coleccionPalabras))&&($numPalabra >= 0)){
-                    $usoPalabra = verificarNumeroPalabra($coleccionPalabras, $coleccionPartidas, $numPalabra, $nombreUsuario);
-                    if(!$usoPalabra){
-                        $palabraAJugar = $coleccionPalabras[$numPalabra - 1];
-                        $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
-                        array_push($coleccionPartidas,$partidaJugada);
-                        echo "\nDesea seguir jugando? S/N: ";
-                        $respuesta = trim(fgets(STDIN));
-                        if($respuesta=="N" || $respuesta=="n"){
-                            $seguir = true;
-                        }
-                    }else{
-                        echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
-                    }
-                }else{
-                    echo "No existe la palabra, vuelve a intentarlo.\n";
-                }
-            }while(!$seguir);
 
-}
-
-/**EXPLICACION 1 PUNTO 3
- * Este módulo le solicita al usuario un numéro de partida y muestra en pantalla los datos de una partida
- * @param array $coleccionPartidas
- */
-function mostrarPartida($coleccionPartidas){
-    //int $numeroPartida
-    do{
-        echo "Ingrese el numero de la partida:";
-        $numeroPartida = trim(fgets(STDIN));
-        $numeroPartida = (int)($numeroPartida);
-        if(($numeroPartida<=count($coleccionPartidas)&&($numeroPartida>=1))){
-            datosPartida($coleccionPartidas,$numeroPartida);
-        }else{
-            echo"No existe el numero de partida, vuelve a intentarlo.\n";
-        }
-    }while(($numeroPartida>count($coleccionPartidas)||($numeroPartida<1)));
-}
 
 /**EXPLICACIÓN 1 PUNTO 4
  *Este módulo le solicita al usuario un nombre de jugador y se muestra en pantalla el primer juego ganado por dicho jugador
@@ -403,7 +348,9 @@ function agregarNuevaPalabra($coleccionPalabras){
     //string $palabraAJugar
     $palabraAJugar = leerPalabra5Letras();
     $coleccionPalabras = agregarPalabra($coleccionPalabras, $palabraAJugar);
+    return $coleccionPalabras;
 }
+
 
 
 /**************************************/
@@ -426,7 +373,30 @@ do {
    $opcion = seleccionarOpcion();
     switch ($opcion) { //estructura de control alternativa switch, sirve para desarollar una rama de opciones dependiendo de un valor que haya ingresado el usuario
         case 1:     
-            jugarPalabraElegida($palabras, $partidas);
+            $nombreUsuario = solicitarJugador();
+            $seguir = false;
+            do{
+                echo "Ingrese un numero de palabra para jugar:";
+                $numPalabra = trim(fgets(STDIN));
+                $numPalabra = (int)($numPalabra);
+                if(($numPalabra<=count($palabras))&&($numPalabra >= 0)){
+                    $usoPalabra = verificarNumeroPalabra($palabras, $partidas, $numPalabra, $nombreUsuario);
+                    if(!$usoPalabra){
+                        $palabraAJugar = $palabras[$numPalabra - 1];
+                        $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
+                        array_push($partidas,$partidaJugada);
+                        echo "\nDesea seguir jugando? S/N: ";
+                        $respuesta = trim(fgets(STDIN));
+                        if($respuesta=="N" || $respuesta=="n"){
+                            $seguir = true;
+                        }
+                    }else{
+                        echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
+                    }
+                }else{
+                    echo "No existe la palabra, vuelve a intentarlo.\n";
+                }
+            }while(!$seguir);
             break;
         case 2: 
             $nombreUsuario = solicitarJugador();
@@ -444,19 +414,47 @@ do {
             }while($seguir && $indice < count($palabras));
             break;  
         case 3: 
-            mostrarPartida($partidas);
+            do{
+                echo "Ingrese el numero de la partida:";
+                $numeroPartida = trim(fgets(STDIN));
+                $numeroPartida = (int)($numeroPartida);
+                if(($numeroPartida<=count($partidas)&&($numeroPartida>=1))){
+                    datosPartida($partidas,$numeroPartida);
+                }else{
+                    echo"No existe el numero de partida, vuelve a intentarlo.\n";
+                }
+            }while(($numeroPartida>count($partidas)||($numeroPartida<1)));
             break;
         case 4:
-            mostrarPrimeraPartidaGanadora($partidas);
+            do{
+                $nombreUsuario = solicitarJugador();
+                $existeNombre = verExistenciaNombre($partidas,$nombreUsuario);
+                if($existeNombre){
+                   $indicePartidadGanada = primerPartidaGanada($partidas, $nombreUsuario); 
+                    if($indicePartidadGanada == -1){
+                        echo "El jugador ".$nombreUsuario." no gano ninguna partida";
+                    }else{
+                    echo "**********************************************************\n";
+                    echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$partidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
+                    echo "Jugador: ".$partidas[$indicePartidadGanada-1]["jugador"]."\n";
+                    echo "Puntos: ".$partidas[$indicePartidadGanada-1]["puntaje"]."\n";
+                    echo"Intento: Adivinó la palabra en ".$partidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
+                    echo "**********************************************************";
+                    }    
+                }else{
+                    echo "Nombre inexistente, vuelva a intentarlo.\n";
+                }    
+            
+            }while(!$existeNombre);
             break;
         case 5: 
-            mostrarEstadísticas($partidas);            
+            mostrarEstadísticas($partidas);           
             break;
         case 6: 
-            mostrarPartidasOrdenadas($coleccionPartidas);
+            mostrarPartidasOrdenadas($partidas);
             break;
         case 7: 
-           agregarNuevaPalabra($palabras);
+           $palabras = agregarNuevaPalabra($palabras);
             break;
         default: 
         if($opcion != 8){
