@@ -111,7 +111,7 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
     //int $i, boolean $encontrada
     $encontrada = false;
     $i = 0;
-    while ($encontrada != true){
+    while (!$encontrada && $i < count($partidasGuardadas)){
         if($partidasGuardadas[$i]["jugador"] == $nombreJugador && $partidasGuardadas[$i]["puntaje"] != 0){
             $encontrada = true;
         }else{
@@ -119,7 +119,7 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
         }
         
     }
-    if($encontrada == false){
+    if(!$encontrada){
         $i=-1;
     }
     return $i;
