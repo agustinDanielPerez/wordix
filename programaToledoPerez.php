@@ -9,7 +9,7 @@ include_once("wordix.php");
 
 /* Perez, Agustin. FAI-3784. TUDW. agustin.perez@est.fi.uncoma.edu.ar. agustinDanielPerez */
 /* Perez Toledo, Laura. FAI-5038. TUDW. laura.perez@est.fi.uncoma.edu.ar. lauPerezToledo */
-/* Goday, Celina Itati. FAI-5058. TUDW. celina.goday@est.fi.uncoma.edu.ar  celigoday */
+
 
 
 /**************************************/
@@ -78,14 +78,14 @@ function seleccionarOpcion(){
  */
 function datosPartida($partidasGuardadas,$numero){
     echo "**********************************************************\n";
-    echo "Partida WORDIX ".$numero.": palabra ".$partidasGuardadas[$numero-1]["palabraWordix"]."\n";
-    echo "Jugador: ".$partidasGuardadas[$numero-1]["jugador"]."\n";
-    echo "Puntaje: ".$partidasGuardadas[$numero-1]["puntaje"]."\n";
+    echo "Partida WORDIX ".$numero.": palabra ".$partidasGuardadas[$numero]["palabraWordix"]."\n";
+    echo "Jugador: ".$partidasGuardadas[$numero]["jugador"]."\n";
+    echo "Puntaje: ".$partidasGuardadas[$numero]["puntaje"]."\n";
     echo "Intento: ";
-    if($partidasGuardadas[$numero-1]["puntaje"]==0){
+    if($partidasGuardadas[$numero]["puntaje"]==0){
         echo "No adivinó la palabra\n";
     }else{
-        echo"Adivinó la palabra en ".$partidasGuardadas[$numero-1]["intentos"]." intentos\n";
+        echo"Adivinó la palabra en ".$partidasGuardadas[$numero]["intentos"]." intentos\n";
     }
     echo "**********************************************************";
 }
@@ -114,8 +114,10 @@ function primerPartidaGanada($partidasGuardadas, $nombreJugador){
     while ($encontrada != true){
         if($partidasGuardadas[$i]["jugador"] == $nombreJugador && $partidasGuardadas[$i]["puntaje"] != 0){
             $encontrada = true;
+        }else{
+            $i++;
         }
-        $i++;
+        
     }
     if($encontrada == false){
         $i=-1;
@@ -136,7 +138,7 @@ function solicitarJugador(){
         if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z"){
             $nombreMinuscula = strtolower($nombre);
         }else{
-            echo "El primer caracter no es una letra\n";
+            echo "El primer caracter no es una letra, vuelva a intenatarlo\n";
             $verificacionPalabra = false;
         }
     }while(!$verificacionPalabra);
@@ -178,23 +180,23 @@ function verExistenciaNombre($partidas, $nombre){
 /**
  * Este módulo dado una colección de palabra, una coleccion de partidas y una palabra
  * verifica si el jugador ya jugo con esa palabra.
+ * @param string $palabra
  * @param array $arregloPartidas
- * @param array $arregloPalabras
- * @param int $numeroPalabra
  * @param string $usuario
  * @return boolean
 */
-function verificarNumeroPalabra($arregloPalabras, $arregloPartidas, $numeroPalabra, $usuario){
+function verificarNumeroPalabra($palabra, $arregloPartidas, $usuario){
     /*boolean $verPalabra, int $i*/
     $i=0;
     $verPalabra = false;
     do{
-        if(($arregloPalabras[$numeroPalabra-1]==$arregloPartidas[$i]["palabraWordix"])&&($arregloPartidas[$i]["jugador"]==$usuario)){
+        if(($arregloPartidas[$i]["palabraWordix"]==$palabra)&&($arregloPartidas[$i]["jugador"]==$usuario)){
             $verPalabra = true;
         }else{
             $i++;
         }
-    }while(!$verPalabra && $i < count($arregloPalabras) && $i < count($arregloPartidas));
+        
+    }while(!$verPalabra && $i < count($arregloPartidas));
     return $verPalabra;
 }
 
@@ -285,39 +287,6 @@ function estadisticasJugador($arregloPartidas, $usuario){
 }
 
 
-
-/**EXPLICACIÓN 1 PUNTO 4
- *Este módulo le solicita al usuario un nombre de jugador y se muestra en pantalla el primer juego ganado por dicho jugador
- *@param array $coleccionPartidas
- */
-function mostrarPrimeraPartidaGanadora($coleccionPartidas){
-    /**
-     * string $nombreUsuario
-     * boolean $existeNombre
-     * int $indicePartidaGanada
-     */
-    do{
-        $nombreUsuario = solicitarJugador();
-        $existeNombre = verExistenciaNombre($coleccionPartidas,$nombreUsuario);
-        if($existeNombre){
-           $indicePartidadGanada = primerPartidaGanada($coleccionPartidas, $nombreUsuario); 
-            if($indicePartidadGanada == -1){
-                echo "El jugador ".$nombreUsuario." no gano ninguna partida";
-            }else{
-            echo "**********************************************************\n";
-            echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$coleccionPartidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
-            echo "Jugador: ".$coleccionPartidas[$indicePartidadGanada-1]["jugador"]."\n";
-            echo "Puntos: ".$coleccionPartidas[$indicePartidadGanada-1]["puntaje"]."\n";
-            echo"Intento: Adivinó la palabra en ".$coleccionPartidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
-            echo "**********************************************************";
-            }    
-        }else{
-            echo "Nombre inexistente, vuelva a intentarlo.\n";
-        }    
-    
-    }while(!$existeNombre);
-}
-
 /**EXPLICACIÓN 1 PUNTO 5
  * Este módulo le solicita al usuario que ingrese un nombre de jugador y se muestran las estadísticas
  * @param array $coleccionPartidas
@@ -334,7 +303,7 @@ function mostrarEstadísticas($coleccionPartidas){
             estadisticasJugador($coleccionPartidas, $nombreUsuario);
             $seguir = false;
         }else{
-            echo "Ingrese un nombre correcto.\n";
+            echo "Nombre inexistente, vuelva intentarlo.\n";
         }
     }while($seguir);
 }
@@ -379,10 +348,10 @@ do {
                 echo "Ingrese un numero de palabra para jugar:";
                 $numPalabra = trim(fgets(STDIN));
                 $numPalabra = (int)($numPalabra);
-                if(($numPalabra<=count($palabras))&&($numPalabra >= 0)){
-                    $usoPalabra = verificarNumeroPalabra($palabras, $partidas, $numPalabra, $nombreUsuario);
-                    if(!$usoPalabra){
-                        $palabraAJugar = $palabras[$numPalabra - 1];
+                if(($numPalabra<=count($palabras))&&($numPalabra >= 1)){
+                    $palabraAJugar = $palabras[$numPalabra - 1];
+                    $usoPalabra = verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario);
+                    if(!$usoPalabra){  
                         $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
                         array_push($partidas,$partidaJugada);
                         echo "\nDesea seguir jugando? S/N: ";
@@ -403,8 +372,8 @@ do {
             $seguir = true;
             $indice = 0;
             do{ 
-                if(!verificarNumeroPalabra($palabras, $partidas, $indice+1, $nombreUsuario)){
-                    $palabraAJugar = $palabras[$indice];
+                $palabraAJugar = $palabras[$indice];
+                if(!verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario)){
                     $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
                     array_push($partidas,$partidaJugada);
                     $seguir = false;
@@ -419,7 +388,7 @@ do {
                 $numeroPartida = trim(fgets(STDIN));
                 $numeroPartida = (int)($numeroPartida);
                 if(($numeroPartida<=count($partidas)&&($numeroPartida>=1))){
-                    datosPartida($partidas,$numeroPartida);
+                    datosPartida($partidas,$numeroPartida-1);
                 }else{
                     echo"No existe el numero de partida, vuelve a intentarlo.\n";
                 }
@@ -434,12 +403,7 @@ do {
                     if($indicePartidadGanada == -1){
                         echo "El jugador ".$nombreUsuario." no gano ninguna partida";
                     }else{
-                    echo "**********************************************************\n";
-                    echo "Partida WORDIX ".$indicePartidadGanada.": palabra ".$partidas[$indicePartidadGanada-1]["palabraWordix"]."\n";
-                    echo "Jugador: ".$partidas[$indicePartidadGanada-1]["jugador"]."\n";
-                    echo "Puntos: ".$partidas[$indicePartidadGanada-1]["puntaje"]."\n";
-                    echo"Intento: Adivinó la palabra en ".$partidas[$indicePartidadGanada-1]["intentos"]." intentos\n";
-                    echo "**********************************************************";
+                        datosPartida($partidas, $indicePartidadGanada);
                     }    
                 }else{
                     echo "Nombre inexistente, vuelva a intentarlo.\n";
@@ -455,6 +419,7 @@ do {
             break;
         case 7: 
            $palabras = agregarNuevaPalabra($palabras);
+           echo "Ya ingresaste una nueva palabra, vuelve al menu de opciones para jugar con tu nueva palabra!\n";
             break;
         default: 
         if($opcion != 8){

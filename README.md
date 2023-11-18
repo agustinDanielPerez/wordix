@@ -18,4 +18,3 @@ Grupo Nº1
  
  **Laura Perez Toledo** -Legajo: FAI-5038 - email: laura.perez@est.fi.uncoma.edu.ar - GitHub: LauPerezToledo
 
-**Celina Itati Goday** -Legajo: FAI-5058 - email: celina.goday@est.fi.uncoma.edu.ar - GitHub: celigoday
