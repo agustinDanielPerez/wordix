@@ -45,7 +45,7 @@ function cargarPartidas(){
     $partida6=["palabraWordix" => "PIANO", "jugador" => "periko", "intentos" => 6, "puntaje" => 8];
     $partida7=["palabraWordix" => "HUEVO", "jugador" => "marcos", "intentos" => 4, "puntaje" => 12];
     $partida8=["palabraWordix" => "YUYOS", "jugador" => "karina", "intentos" => 1, "puntaje" => 17];
-    $partida9=["palabraWordix" => "RASGO", "jugador" => "ruperto", "intentos" => 5, "puntaje" => 12];
+    $partida9=["palabraWordix" => "RASGO", "jugador" => "zrack", "intentos" => 5, "puntaje" => 12];
     $partida10=["palabraWordix" => "MUJER", "jugador" => "lauuu", "intentos" => 1, "puntaje" => 15];
     $partida11=["palabraWordix" => "MUJER", "jugador" => "laura", "intentos" => 0, "puntaje" => 0];
     $partidasGuardadas = [$partida1, $partida2, $partida3, $partida4, $partida5, $partida6, $partida7, $partida8, $partida9, $partida10, $partida11];
@@ -135,7 +135,7 @@ function solicitarJugador(){
         $verificacionPalabra = true;
         echo "Ingrese el nombre de un jugador, el primer caracter debe ser una letra: ";                 
         $nombre = trim(fgets(STDIN));
-        if ($nombre[0] > "a" && $nombre[0] < "z" || $nombre[0] > "A" && $nombre[0] < "z"){
+        if ($nombre[0] >= "a" && $nombre[0] <= "z" || $nombre[0] >= "A" && $nombre[0] <= "Z"){
             $nombreMinuscula = strtolower($nombre);
         }else{
             echo "El primer caracter no es una letra, vuelva a intenatarlo\n";
@@ -178,6 +178,26 @@ function verExistenciaNombre($partidas, $nombre){
 }
 
 /**
+ * Este módulo dado un nombre y un array, verifica si el nombre esta dentro del array.
+ * @param array $coleccionPalabras
+ * @param string $palabra
+ * @return boolean
+*/
+function verExistenciaPalabra($coleccionPalabras, $palabra){
+    /* boolean $estaPalabra , int $i*/
+    $i=0;
+    $estaPalabra = false;
+    do{ 
+        if($coleccionPalabras[$i]==$palabra){
+            $estaPalabra = true;
+        }else{
+            $i++;
+        }
+    }while((!$estaPalabra) && ($i < count($coleccionPalabras)));
+    return $estaPalabra;
+}
+
+/**
  * Este módulo dado una colección de palabra, una coleccion de partidas y una palabra
  * verifica si el jugador ya jugo con esa palabra.
  * @param string $palabra
@@ -199,8 +219,6 @@ function verificarNumeroPalabra($palabra, $arregloPartidas, $usuario){
     }while(!$verPalabra && $i < count($arregloPartidas));
     return $verPalabra;
 }
-
-
 
 /**
  *Este módulo es la función auxiliar que ordena para que la función uasort pueda ser utilizada. 
@@ -312,11 +330,17 @@ function mostrarEstadísticas($coleccionPartidas){
  * Este módulo solicita una palabra de 5 letras al usuario y la agrega en mayúsculas a la colección 
  * de palabras que posee Wordix, para que el usuario pueda utilizarla para jugar.
  * @param array coleccionPalabras
+ * @return array
  */
 function agregarNuevaPalabra($coleccionPalabras){
     //string $palabraAJugar
     $palabraAJugar = leerPalabra5Letras();
-    $coleccionPalabras = agregarPalabra($coleccionPalabras, $palabraAJugar);
+    if (!verExistenciaPalabra($coleccionPalabras, $palabraAJugar)){
+        $coleccionPalabras = agregarPalabra($coleccionPalabras, $palabraAJugar);
+        echo "Ya ingresaste una nueva palabra, vuelve al menu de opciones para jugar con tu nueva palabra!\n";
+    }
+    else
+        echo "Esa palabra ya existe";
     return $coleccionPalabras;
 }
 
@@ -369,18 +393,27 @@ do {
             break;
         case 2: 
             $nombreUsuario = solicitarJugador();
-            $seguir = true;
-            $indice = 0;
-            do{ 
-                $palabraAJugar = $palabras[$indice];
-                if(!verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario)){
-                    $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
-                    array_push($partidas,$partidaJugada);
-                    $seguir = false;
+            $seguir = false;
+            do{
+                $numPalabra = array_rand($palabras, 1);
+                if(($numPalabra<=count($palabras))&&($numPalabra >= 1)){
+                    $palabraAJugar = $palabras[$numPalabra - 1];
+                    $usoPalabra = verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario);
+                    if(!$usoPalabra){  
+                        $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
+                        array_push($partidas,$partidaJugada);
+                        echo "\nDesea seguir jugando? S/N: ";
+                        $respuesta = trim(fgets(STDIN));
+                        if($respuesta=="N" || $respuesta=="n"){
+                            $seguir = true;
+                        }
+                    }else{
+                        echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
+                    }
                 }else{
-                    $indice++;
+                    echo "No existe la palabra, vuelve a intentarlo.\n";
                 }
-            }while($seguir && $indice < count($palabras));
+            }while(!$seguir);
             break;  
         case 3: 
             do{
@@ -419,7 +452,7 @@ do {
             break;
         case 7: 
            $palabras = agregarNuevaPalabra($palabras);
-           echo "Ya ingresaste una nueva palabra, vuelve al menu de opciones para jugar con tu nueva palabra!\n";
+        
             break;
         default: 
         if($opcion != 8){
