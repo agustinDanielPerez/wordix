@@ -372,7 +372,7 @@ do {
                 echo "Ingrese un numero de palabra para jugar:";
                 $numPalabra = trim(fgets(STDIN));
                 $numPalabra = (int)($numPalabra);
-                if(($numPalabra<=count($palabras))&&($numPalabra >= 1)){
+                if(($numPalabra<=count($palabras))&&($numPalabra >= 1)&&(is_numeric($numPalabra))){
                     $palabraAJugar = $palabras[$numPalabra - 1];
                     $usoPalabra = verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario);
                     if(!$usoPalabra){  
@@ -387,7 +387,7 @@ do {
                         echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
                     }
                 }else{
-                    echo "No existe la palabra, vuelve a intentarlo.\n";
+                    echo "No existe la palabra o lo que ingreso no es un numero, vuelve a intentarlo.\n";
                 }
             }while(!$seguir);
             break;
@@ -420,10 +420,10 @@ do {
                 echo "Ingrese el numero de la partida:";
                 $numeroPartida = trim(fgets(STDIN));
                 $numeroPartida = (int)($numeroPartida);
-                if(($numeroPartida<=count($partidas)&&($numeroPartida>=1))){
+                if(($numeroPartida<=count($partidas)&&($numeroPartida>=1)&&(is_numeric($numeroPartida)))){
                     datosPartida($partidas,$numeroPartida-1);
                 }else{
-                    echo"No existe el numero de partida, vuelve a intentarlo.\n";
+                    echo"No existe el numero de partida o lo que ingreso no es un numero, vuelve a intentarlo.\n";
                 }
             }while(($numeroPartida>count($partidas)||($numeroPartida<1)));
             break;
