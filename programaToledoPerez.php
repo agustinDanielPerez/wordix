@@ -396,23 +396,21 @@ do {
             $seguir = false;
             do{
                 $numPalabra = array_rand($palabras, 1);
-                if(($numPalabra<=count($palabras))&&($numPalabra >= 1)){
-                    $palabraAJugar = $palabras[$numPalabra - 1];
-                    $usoPalabra = verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario);
-                    if(!$usoPalabra){  
-                        $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
-                        array_push($partidas,$partidaJugada);
-                        echo "\nDesea seguir jugando? S/N: ";
-                        $respuesta = trim(fgets(STDIN));
-                        if($respuesta=="N" || $respuesta=="n"){
-                            $seguir = true;
-                        }
-                    }else{
-                        echo $nombreUsuario." ya usaste la palabra, elige otra.\n";
-                    }
+                $palabraAJugar = $palabras[$numPalabra];
+                $usoPalabra = verificarNumeroPalabra($palabraAJugar, $partidas, $nombreUsuario);
+                if(!$usoPalabra){  
+                    $partidaJugada = jugarWordix($palabraAJugar, $nombreUsuario);
+                    array_push($partidas,$partidaJugada);
+                    echo "\nDesea seguir jugando? S/N: ";
+                    $respuesta = trim(fgets(STDIN));
+                    if($respuesta=="N" || $respuesta=="n"){
+                        $seguir = true;
+                    }   
                 }else{
-                    echo "No existe la palabra, vuelve a intentarlo.\n";
+                    echo $nombreUsuario." ya usaste esa palabra, buscaremos otra.\n";
                 }
+                    
+                
             }while(!$seguir);
             break;  
         case 3: 
