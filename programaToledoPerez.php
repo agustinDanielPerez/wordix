@@ -407,7 +407,7 @@ do {
                         $seguir = true;
                     }   
                 }else{
-                    echo $nombreUsuario." ya usaste esa palabra, buscaremos otra.\n";
+                    echo $nombreUsuario." ya usaste esa palabra, buscaremos otra o trata de agregar mas palabras desde el menu.\n";
                 }
                     
                 
